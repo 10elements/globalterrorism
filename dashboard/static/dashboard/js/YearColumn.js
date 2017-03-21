@@ -1,6 +1,6 @@
 var attacks_per_year_chart;
 
-var requestAll = function(){
+var requestAllYearlyAttacks = function(){
     $.getJSON('attacksyearly/', function(data){
         attacks_per_year_chart.series[0].setData(data);
     });
@@ -14,7 +14,7 @@ $(function() {
         chart: {
             type: 'column',
             events: {
-                load: requestAll
+                load: requestAllYearlyAttacks
             }
         },
         title: {
