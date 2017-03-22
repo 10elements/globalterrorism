@@ -52,6 +52,7 @@
           optDropdown.removeClass('w3-show');
         }
       };
+
       $('#optDropdownBtn').click(toggleDropdown);
       $('#where_option').click(function() {
         var button = $('#optDropdownBtn');
@@ -82,11 +83,13 @@
           filter.removeClass('w3-show');
         }
       });
+
       $('#where_option').click(function() {
         $('.section').css('display', 'none');
         $('#terror_location').css('display', 'block');
         console.log($('#terror_location').css('display'))
       });
+
       $('#who_option').click(function() {
         $('.section').css('display', 'none');
         $('#terror_group').css('display', 'block');
@@ -100,11 +103,11 @@
       $('#' + section).show();
     }
     </script>
-    <script src="{% static 'dashboard/js/loadMap.js' %}"></script>
-    <script src="{% static 'dashboard/js/YearColumn.js' %}"></script>
-    <script src="{% static 'dashboard/js/terrorgroupmap.js' %}"></script>
-    <script src="{% static 'dashboard/js/topterrorgroups.js' %}"></script>
-    <script src="{% static 'dashboard/js/terrormotives.js' %}"></script>
+    <script src="{% static 'dashboard/js/attacksMapAndAttacksColumnChart.js' %}"></script>
+    <!--<script src="{% static 'dashboard/js/YearColumn.js' %}"></script>-->
+    <!--<script src="{% static 'dashboard/js/terrorgroupmap.js' %}"></script>-->
+    <!--<script src="{% static 'dashboard/js/topterrorgroups.js' %}"></script>-->
+    <!--<script src="{% static 'dashboard/js/terrormotives.js' %}"></script>-->
   </head>
   
   <body class="w3-light-grey">
@@ -127,16 +130,18 @@
     </div>
 
     <!-- !PAGE CONTENT! -->
-    <div id="terror_location" class="section" style="height: 900px; display: block;" >
-      <div id="Map" class="w3-border" style="height: 40%; width: 40%; margin: auto; display: block;"></div>
-      <div id="YearColumn" class="w3-border" style="height: 40%; width: 40%; margin: auto; display: block;"></div>
+    <div id="terror_location" class="section" style="height: 1200px; display: block;" >
+      <div id="Map" class="w3-padding-16" style="height: 40%; width: 40%; margin: auto; display: block;"></div>
+      <div id="columChartSpecificCountry" class="w3-hide w3-animate-top w3-padding-16" style="height: 30%; width: 40%; margin: auto;"></div>
+      <div id="YearColumn" class="w3-padding-16" style="height: 30%; width: 40%; margin: auto; display: block;"></div>
+      <div style="width: 15%; margin: auto;"><button id='overview' class="w3-btn w3-blue w3-padding-12" style="width: 100%"><i class="fa fa-globe"></i> overview</button></div>
     </div>
     
     <div id="terror_group" class="section" style="height: 900px; display: none;">
       <div class="w3-container w3-large w3-padding-4" style="width: 25%; margin: auto;">
         <button id="group_filter" class="w3-btn-block w3-blue">Filter</button>
         <form id="filter_form" class="w3-hide">
-          <label>Terror Group:</label> <br>
+          <label>Terror Group:</label><br>
           <input type="text" list="terror_groups_list" name="group_of_interest"><br>
             <datalist id="terror_groups_list">
             <option value="ISIS">
@@ -145,9 +150,9 @@
             <option value="AAA">
             <option value="BBB">
           </datalist>
-          <label>Start Year:</label> <br>
+          <label>Start Year:</label><br>
           <input type="text" name="time_of_interest_start" value="start year"><br>
-          <label>End Year:</label> <br>
+          <label>End Year:</label><br>
           <input type="text" name="time_of_interest_end" value="end year">
           <input type="submit" value="apply">
         </form>

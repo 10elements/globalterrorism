@@ -12,17 +12,36 @@ def dashboard_page(request):
 @cache_page(60 * 3)
 def attacks_yearly(request):
     print('inside attacks_yearly')
-    res = TerrorAttackRecord.objects.values('iyear').annotate(total = Count('iyear')).order_by('iyear')
+    records = TerrorAttackRecord.objects.values('iyear').annotate(total = Count('iyear')).order_by('iyear')
     data = []
-    for record in res:
-        data.append(record['total'])
+    for record in records:
+        data.append([record['iyear'], record['total']])
     return JsonResponse(data, safe = False)
 
 @cache_page(60 * 3)
 def attacks_map(request):
     print('inside attacks_map')
-    res = TerrorAttackRecord.objects.values('country').annotate(total = Count('country'))
+    records = TerrorAttackRecord.objects.values('country').annotate(total = Count('country'))
     data = {}
-    for record in res:
+    for record in records:
         data[record['country']] = record['total']
     return JsonResponse(data)
+
+@cache_page(60)
+def attacks_map_specific_year(request, year_number):
+    print('inside year')
+    records = TerrorAttackRecord.objects.filter(iyear = year_number).values('country')\
+        .annotate(total = Count('country'))
+    data = {}
+    for record in records:
+        data[record['country']] = record['total']
+    return JsonResponse(data)
+
+@cache_page(60)
+def attacks_yearly_specific_country(request, country_name):
+    records = TerrorAttackRecord.objects.filter(country = country_name).values('iyear')\
+        .annotate(total = Count('iyear')).order_by('iyear')
+    data = []
+    for record in records:
+        data.append([record['iyear'], record['total']])
+    return JsonResponse(data, safe = False)
