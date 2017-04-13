@@ -1,41 +1,48 @@
 <!DOCTYPE html>
 {% load static %}
-<html>
-  <head>
-    <title>global terrorrism 1970-2015</title>
+<html class="w3-border">
+<head>
+    <title>global terrorism 1970-2015</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'dashboard/css/awesomplete.css' %}">
     <style>
-    html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
-    li{
-    list-style-type: none;
-    cursor: pointer;
-    }
-    input[type=text] {
-    width: 100%;
-    padding: 12px 20px;
-    margin: 8px 0;
-    display: inline-block;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-    }
-    input[type=submit] {
-    width: 100%;
-    background-color: #4CAF50;
-    color: white;
-    padding: 14px 20px;
-    margin: 8px 0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    }
-    input[type=submit]:hover {
-    background-color: #45a049;
-    }
+        html, body, h1, h2, h3, h4, h5 {
+            font-family: "Raleway", sans-serif
+        }
+
+        li {
+            list-style-type: none;
+            cursor: pointer;
+        }
+
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
     </style>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -43,127 +50,159 @@
     <!-- <script src="https://code.highcharts.com/maps/modules/exporting.js"></script> -->
     <script src="https://code.highcharts.com/mapdata/custom/world-palestine-lowres.js"></script>
     <script>
-    $(function() {
-      var toggleDropdown = function() {
-        var optDropdown = $('#optionsDropdwon');
-        if (!optDropdown.hasClass('w3-show')) {
-          optDropdown.addClass('w3-show');
-        } else {
-          optDropdown.removeClass('w3-show');
+        $(function () {
+            var toggleDropdown = function () {
+                var optDropdown = $('#optionsDropdwon');
+                if (!optDropdown.hasClass('w3-show')) {
+                    optDropdown.addClass('w3-show');
+                } else {
+                    optDropdown.removeClass('w3-show');
+                }
+            };
+
+            $('#optDropdownBtn').click(toggleDropdown);
+            $('#where_option').click(function () {
+                var button = $('#optDropdownBtn');
+                button.html($(this).html());
+                toggleDropdown();
+            });
+
+            $('#who_option').click(function () {
+                var button = $('#optDropdownBtn');
+                button.html($(this).html());
+                toggleDropdown();
+            });
+
+            $('#tactics_option').click(function () {
+                var button = $('#optDropdownBtn');
+                button.html($(this).html());
+                toggleDropdown();
+            });
+
+            $('#targets_option').click(function () {
+                var button = $('#optDropdownBtn');
+                button.html($(this).html());
+                toggleDropdown();
+            });
+
+            $('#where_option').click(function () {
+                $('.section').css('display', 'none');
+                $('#terror_location').css('display', 'block');
+                console.log($('#terror_location').css('display'))
+            });
+
+            $('#who_option').click(function () {
+                $('.section').css('display', 'none');
+                $('#terror_group').css('display', 'block');
+                console.log($('#terror_group').css('display'))
+            });
+
+            // sent ajax request when filterForm is submitted
+            var filterForm = $('#filter_form');
+            var keywords;
+            WordCloud.minFontSize = "15px";
+            filterForm.submit(function (event) {
+                $.ajax({
+                    type: filterForm.attr('method'),
+                    url: filterForm.attr('action'),
+                    data: filterForm.serialize(),
+                    dataType: "json",
+                    success: function (data) {
+                        keywords = data;
+                        WordCloud($('#keywordscloud')[0], {
+                            list: keywords,
+                            gridSize: 18,
+                            weightFactor: 3,
+                            fontFamily: 'Times, serif',
+                            rotateRatio: 0.5,
+                            rotationSteps: 2,
+                            backgroundColor: '#DCDCDC'
+                        });
+                    }
+                });
+
+                // prevent the form from being submitted
+                event.preventDefault();
+            });
+            var groupNames = [];
+            $.each(terrorGroups, function (key, val) {
+                groupNames.push(key);
+            });
+            var gnameInput = $('#g_name')[0];
+            var autoComplete = new Awesomplete(gnameInput, {
+                list: groupNames
+            });
+        });
+
+        function changeSection(section) {
+            console.log("triggered");
+            $('.section').hide();
+            $('#' + section).show();
         }
-      };
-
-      $('#optDropdownBtn').click(toggleDropdown);
-      $('#where_option').click(function() {
-        var button = $('#optDropdownBtn');
-        button.html($(this).html());
-        toggleDropdown();
-      });
-      $('#who_option').click(function() {
-        var button = $('#optDropdownBtn');
-        button.html($(this).html());
-        toggleDropdown();
-      });
-      $('#tactics_option').click(function() {
-        var button = $('#optDropdownBtn');
-        button.html($(this).html());
-        toggleDropdown();
-      });
-      $('#targets_option').click(function() {
-        var button = $('#optDropdownBtn');
-        button.html($(this).html());
-        toggleDropdown();
-      });
-
-      $('#group_filter').click(function() {
-        var filter = $('#filter_form');
-        if (!filter.hasClass('w3-show')) {
-          filter.addClass('w3-show');
-        } else {
-          filter.removeClass('w3-show');
-        }
-      });
-
-      $('#where_option').click(function() {
-        $('.section').css('display', 'none');
-        $('#terror_location').css('display', 'block');
-        console.log($('#terror_location').css('display'))
-      });
-
-      $('#who_option').click(function() {
-        $('.section').css('display', 'none');
-        $('#terror_group').css('display', 'block');
-        console.log($('#terror_group').css('display'))
-      });
-    });
-
-    function changeSection(section) {
-      console.log("triggered");
-      $('.section').hide();
-      $('#' + section).show();
-    }
     </script>
+    <script src="{% static 'dashboard/js/wordcloud2.js' %}"></script>
     <script src="{% static 'dashboard/js/attacksMapAndAttacksColumnChart.js' %}"></script>
-    <!--<script src="{% static 'dashboard/js/YearColumn.js' %}"></script>-->
+    <script src="{% static 'dashboard/js/awesomplete.js' %}"></script>
+    <script src="{% static 'dashboard/js/terrorGroups.js' %}"
     <!--<script src="{% static 'dashboard/js/terrorgroupmap.js' %}"></script>-->
     <!--<script src="{% static 'dashboard/js/topterrorgroups.js' %}"></script>-->
     <!--<script src="{% static 'dashboard/js/terrormotives.js' %}"></script>-->
-  </head>
-  
-  <body class="w3-light-grey">
-    <!-- Top container -->
-    <div class="w3-container w3-large w3-text-white w3-padding" style="z-index:4;background-color: #2b446d">
-      <h1>Global Terrorism 1970-2015</h1>
-    </div>
+</head>
 
-    <!--dropdown toolbar-->
-    <div class="w3-container w3-large w3-grey w3-padding">
-      <div class="w3-dropdown-click" style="width: 15%; margin: auto; display: block;">
-        <button id="optDropdownBtn" class="w3-btn w3-blue w3-padding-12" style="width: 100%"><i class="fa fa-globe"></i> where</button>
-        <ul id="optionsDropdwon" class="w3-ul w3-hoverable w3-dropdown-content w3-border" style="width: 100%;z-index: 4">
-          <li id="where_option" href="" class="w3-text-grey w3-padding-16"><i class="fa fa-globe"></i> where</li>
-          <li id="who_option" href="" class="w3-text-grey w3-padding-16"><i class="fa fa-group"></i> who</li>
-          <li id="tactics_option" href="" class="w3-text-grey w3-padding-16"><i class="fa fa-bomb"></i> tactics</li>
-          <li id="targets_option" href="" class="w3-text-grey w3-padding-16"><i class="fa fa-university"></i> targets</li>
+<body class="w3-border" style="background-color: #DCDCDC">
+<!-- Top container -->
+<div class="w3-container w3-large w3-text-white w3-padding" style="z-index:4;background-color: #2b446d">
+    <h1>Global Terrorism 1970-2015</h1>
+</div>
+
+<!--dropdown toolbar-->
+<div class="w3-container w3-large w3-grey w3-padding">
+    <div class="w3-dropdown-click" style="width: 15%; margin: auto; display: block;">
+        <button id="optDropdownBtn" class="w3-btn w3-blue w3-padding-12" style="width: 100%"><i class="fa fa-globe"></i>
+            where
+        </button>
+        <ul id="optionsDropdwon" class="w3-ul w3-hoverable w3-dropdown-content w3-border"
+            style="width: 100%;z-index: 4">
+            <li id="where_option" class="w3-text-grey w3-padding-16"><i class="fa fa-globe"></i> where</li>
+            <li id="who_option" class="w3-text-grey w3-padding-16"><i class="fa fa-group"></i> who</li>
+            <li id="tactics_option" class="w3-text-grey w3-padding-16"><i class="fa fa-bomb"></i> tactics</li>
+            <li id="targets_option" class="w3-text-grey w3-padding-16"><i class="fa fa-university"></i> targets</li>
         </ul>
-      </div>
     </div>
+</div>
 
-    <!-- !PAGE CONTENT! -->
-    <div id="terror_location" class="section" style="height: 1200px; display: block;" >
-      <div id="Map" class="w3-padding-16" style="height: 40%; width: 40%; margin: auto; display: block;"></div>
-      <div id="columChartSpecificCountry" class="w3-hide w3-animate-top w3-padding-16" style="height: 30%; width: 40%; margin: auto;"></div>
-      <div id="YearColumn" class="w3-padding-16" style="height: 30%; width: 40%; margin: auto; display: block;"></div>
-      <div style="width: 15%; margin: auto;"><button id='overview' class="w3-btn w3-blue w3-padding-12" style="width: 100%"><i class="fa fa-globe"></i> overview</button></div>
+<!-- !PAGE CONTENT! -->
+<div id="terror_location" class="section" style="height: 1200px; display: block;">
+    <div id="Map" class="w3-padding-16" style="height: 480px; width: 40%; margin: auto; display: block;"></div>
+    <div id="columChartSpecificCountry" class="w3-animate-top w3-padding-16"
+         style="height: 360px; width: 40%; margin: auto; display: none;"></div>
+    <div id="YearColumn" class="w3-padding-16" style="height: 360px; width: 40%; margin: auto; display: block;"></div>
+    <div style="width: 15%; margin: auto;">
+        <button id='overview' class="w3-btn w3-blue w3-padding-12" style="width: 100%"><i class="fa fa-globe"></i>
+            overview
+        </button>
     </div>
-    
-    <div id="terror_group" class="section" style="height: 900px; display: none;">
-      <div class="w3-container w3-large w3-padding-4" style="width: 25%; margin: auto;">
-        <button id="group_filter" class="w3-btn-block w3-blue">Filter</button>
-        <form id="filter_form" class="w3-hide">
-          <label>Terror Group:</label><br>
-          <input type="text" list="terror_groups_list" name="group_of_interest"><br>
-            <datalist id="terror_groups_list">
-            <option value="ISIS">
-            <option value="Taliban">
-            <option value="Maoist">
-            <option value="AAA">
-            <option value="BBB">
-          </datalist>
-          <label>Start Year:</label><br>
-          <input type="text" name="time_of_interest_start" value="start year"><br>
-          <label>End Year:</label><br>
-          <input type="text" name="time_of_interest_end" value="end year">
-          <input type="submit" value="apply">
+</div>
+
+<div id="terror_group" class="section" style="height: 900px; display: none;">
+    <div class="w3-container w3-large w3-padding-4" style="width: 20%; margin: auto;">
+        <form id="filter_form" action="{% url 'dashboard:terror_group_info' %}" method="post">
+            {% csrf_token %}
+            <!--<label>Terror Group:</label><br>-->
+            <input id="g_name" type="text" name="group_of_interest"><br>
+            <!--<input type="submit" value="apply">-->
         </form>
-      </div>
-      <div id="top_terror_groups" style="height: 50%; width: 40%; margin: auto; display: block;">
-      </div>
-      <div class="w3-row" style="height: 40%">
-        <div id="terror_group_map" class="w3-container w3-half w3-border"></div>
-        <div id="terror_motives" class="w3-container w3-half w3-border"></div>
-      </div>
     </div>
-    <!-- End page content -->
-  </body>
+    <!--<div id="top_terror_groups" style="height: 50%; width: 40%; margin: auto; display: block;">-->
+    <!--</div>-->
+    <div style="width: 600px; height: 400px; margin: auto">
+        <canvas id="keywordscloud" height="400" width="600"></canvas>
+    </div>
+    <!--<div class="w3-row" style="height: 40%">-->
+    <!--<div id="terror_group_map" class="w3-container w3-half w3-border"></div>-->
+    <!--<div id="terror_motives" class="w3-container w3-half w3-border"></div>-->
+    <!--</div>-->
+</div>
+<!-- End page content -->
+</body>
 </html>

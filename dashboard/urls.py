@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^attacksmap/$', views.attacks_map, name = 'attacks_map'),
     url(r'^attacksmap/(?P<year_number>[0-9]{4})/$', views.attacks_map_specific_year,
         name = 'attacks_map_specific_year'),
-    url(r'attacksyearly/(?P<country_name>[a-zA-Z]+)/$', views.attacks_yearly_specific_country,
-        name = 'attacks_yearly_specific_country')
+    url(r'^attacksyearly/(?P<country_name>[a-zA-Z]+)/$', views.attacks_yearly_specific_country,
+        name = 'attacks_yearly_specific_country'),
+    url(r'^terrorgroup/$', views.terror_group_info, name = 'terror_group_info')
 ]
