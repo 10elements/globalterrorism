@@ -53,7 +53,8 @@ $(function () {
         chart: {
             events: {
                 load: requestAttacksMap
-            }
+            },
+            backgroundColor: '#DCDCDC'
         },
 
         title: {
@@ -72,7 +73,9 @@ $(function () {
         },
 
         colorAxis: {
-            min: 0
+            min: 0,
+            // minColor: '#efecf3',
+            // maxColor: '#990041'
         },
 
         plotOptions: {
@@ -132,7 +135,8 @@ $(function () {
             type: 'column',
             events: {
                 load: requestAllYearlyAttacks
-            }
+            },
+            backgroundColor: '#DCDCDC'
         },
 
         title: {
@@ -164,7 +168,28 @@ $(function () {
                 cursor: 'pointer',
                 point: {
                     events: {
-                        click: function () {
+                        // click: function () {
+                        //     var attacks_specific_year = [];
+                        //     var year = this.x;
+                        //
+                        //     // ajax request for attacks data for a specific year
+                        //     $.getJSON('attacksmap/' + year + '/', function (data) {
+                        //         $.each(data, function (key, val) {
+                        //             if (country_hc_key_map.has(key)) {
+                        //                 attacks_specific_year.push({
+                        //                     "hc-key": country_hc_key_map.get(key),
+                        //                     "value": val,
+                        //                     othername: key
+                        //                 });
+                        //             }
+                        //         });
+                        //
+                        //         // update attacks_map with the newly requested data
+                        //         attacks_map.series[0].setData(attacks_specific_year);
+                        //         attacks_map.setTitle({text: 'Global Terror Attacks ' + year});
+                        //     });
+                        // },
+                        mouseOver: function () {
                             var attacks_specific_year = [];
                             var year = this.x;
 
@@ -213,7 +238,8 @@ $(function () {
 //                    }
                     apyc_chart.css('display', 'none');
                 }
-            }
+            },
+            backgroundColor: '#DCDCDC'
         },
 
         title: {

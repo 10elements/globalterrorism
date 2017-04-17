@@ -7,11 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Allerta+Stencil">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{% static 'dashboard/css/awesomplete.css' %}">
     <style>
+        body {
+            font-size: 100%;
+        }
+
         html, body, h1, h2, h3, h4, h5 {
-            font-family: "Raleway", sans-serif
+            font-family: "Raleway", sans-serif;
         }
 
         li {
@@ -43,14 +48,27 @@
         input[type=submit]:hover {
             background-color: #45a049;
         }
+
+        svg {
+            background-color: #DCDCDC;
+        }
+
+        path.chord {
+            fill-opacity: .40;
+        }
     </style>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="http://code.highcharts.com/maps/modules/map.js"></script>
-    <!-- <script src="https://code.highcharts.com/maps/modules/exporting.js"></script> -->
     <script src="https://code.highcharts.com/mapdata/custom/world-palestine-lowres.js"></script>
     <script>
         $(function () {
+            var where_option = $('#where_option');
+            var who_option = $('#who_option');
+            var tactics_option = $('#tactics_option');
+            var targets_option = $('#targets_option');
+            var sections = $('.section');
+
             var toggleDropdown = function () {
                 var optDropdown = $('#optionsDropdwon');
                 if (!optDropdown.hasClass('w3-show')) {
@@ -61,77 +79,50 @@
             };
 
             $('#optDropdownBtn').click(toggleDropdown);
-            $('#where_option').click(function () {
+
+            where_option.click(function () {
                 var button = $('#optDropdownBtn');
                 button.html($(this).html());
                 toggleDropdown();
             });
 
-            $('#who_option').click(function () {
+            who_option.click(function () {
                 var button = $('#optDropdownBtn');
                 button.html($(this).html());
                 toggleDropdown();
             });
 
-            $('#tactics_option').click(function () {
+            tactics_option.click(function () {
                 var button = $('#optDropdownBtn');
                 button.html($(this).html());
                 toggleDropdown();
             });
 
-            $('#targets_option').click(function () {
+            targets_option.click(function () {
                 var button = $('#optDropdownBtn');
                 button.html($(this).html());
                 toggleDropdown();
             });
 
-            $('#where_option').click(function () {
-                $('.section').css('display', 'none');
+            where_option.click(function () {
+                sections.css('display', 'none');
                 $('#terror_location').css('display', 'block');
-                console.log($('#terror_location').css('display'))
             });
 
-            $('#who_option').click(function () {
-                $('.section').css('display', 'none');
+            who_option.click(function () {
+                sections.css('display', 'none');
                 $('#terror_group').css('display', 'block');
-                console.log($('#terror_group').css('display'))
             });
 
-            // sent ajax request when filterForm is submitted
-            var filterForm = $('#filter_form');
-            var keywords;
-            WordCloud.minFontSize = "15px";
-            filterForm.submit(function (event) {
-                $.ajax({
-                    type: filterForm.attr('method'),
-                    url: filterForm.attr('action'),
-                    data: filterForm.serialize(),
-                    dataType: "json",
-                    success: function (data) {
-                        keywords = data;
-                        WordCloud($('#keywordscloud')[0], {
-                            list: keywords,
-                            gridSize: 18,
-                            weightFactor: 3,
-                            fontFamily: 'Times, serif',
-                            rotateRatio: 0.5,
-                            rotationSteps: 2,
-                            backgroundColor: '#DCDCDC'
-                        });
-                    }
-                });
+            tactics_option.click(function () {
+                sections.css('display', 'none');
+                $('#tactics').css('display', 'block');
+            });
 
-                // prevent the form from being submitted
-                event.preventDefault();
-            });
-            var groupNames = [];
-            $.each(terrorGroups, function (key, val) {
-                groupNames.push(key);
-            });
-            var gnameInput = $('#g_name')[0];
-            var autoComplete = new Awesomplete(gnameInput, {
-                list: groupNames
-            });
+            targets_option.click(function () {
+                sections.css('display', 'none');
+                $('#targets').css('display', 'block');
+            })
         });
 
         function changeSection(section) {
@@ -141,9 +132,12 @@
         }
     </script>
     <script src="{% static 'dashboard/js/wordcloud2.js' %}"></script>
-    <script src="{% static 'dashboard/js/attacksMapAndAttacksColumnChart.js' %}"></script>
+    <script src="{% static 'dashboard/js/wheresection.js' %}"></script>
     <script src="{% static 'dashboard/js/awesomplete.js' %}"></script>
-    <script src="{% static 'dashboard/js/terrorGroups.js' %}"
+    <script src="{% static 'dashboard/js/terrorGroups.js' %}"></script>
+    <script src="{% static 'dashboard/js/terrorgroupsection.js' %}"></script>
+    <script src="{% static 'dashboard/js/d3/d3.v2.js' %}"></script>
+    <script src="{% static 'dashboard/js/tacticssection.js' %}"></script>
     <!--<script src="{% static 'dashboard/js/terrorgroupmap.js' %}"></script>-->
     <!--<script src="{% static 'dashboard/js/topterrorgroups.js' %}"></script>-->
     <!--<script src="{% static 'dashboard/js/terrormotives.js' %}"></script>-->
@@ -202,6 +196,17 @@
     <!--<div id="terror_group_map" class="w3-container w3-half w3-border"></div>-->
     <!--<div id="terror_motives" class="w3-container w3-half w3-border"></div>-->
     <!--</div>-->
+</div>
+
+<div id="tactics" class="section" style="height: 900px; display: none">
+    <div class="w3-row" style="height: 100%;">
+        <div id="chart" class="w3-half" style="height: 80%;"></div>
+        <div id="attack_correlation_matrix" class="w3-half" style="height: 80%;"></div>
+    </div>
+</div>
+
+<div id="targets" class="section" style="height: 900px; display: none">
+
 </div>
 <!-- End page content -->
 </body>
