@@ -10,6 +10,20 @@ var attacks_per_year_country_chart;
 // map from country name to corresponding hc-key
 var country_hc_key_map = new Map();
 
+// map for targets
+var targets_map;
+
+// column chart for targets
+var target_chart;
+
+var target_names = ["Business", "Government", "Police", "Military", "Clinics", "Airport & Aircraft", "Diplomatic", "Education Institution",
+    "Food/Water Supply", "Media", "Maritime", "NGO", "Other", "Citizens & Property", "Religious", "Telecommunication", "Terrorists/Militias",
+    "Tourists", "Transportation", "Unknown", "Utilities", "Violent Political Parties"];
+var target_indexes = new Map();
+target_names.forEach(function (ele, index) {
+    target_indexes.set(ele, index);
+});
+
 // ajax request for yearly attacks data
 var requestAllYearlyAttacks = function () {
     $.getJSON('attacksyearly/', function (data) {
@@ -48,10 +62,11 @@ $(function () {
     country_hc_key_map.set('United States', 'us');
 
     // initiate attacks_map
-    attacks_map = new Highcharts.Map('Map', {
+    attacks_map = new Highcharts.Map('attacks_map', {
 
         chart: {
             events: {
+                // ajax request for attacks data for map
                 load: requestAttacksMap
             },
             backgroundColor: '#DCDCDC'
@@ -99,9 +114,6 @@ $(function () {
 
                                 // show chart
                                 var apyc_chart = $('#columChartSpecificCountry');
-//                                if(!apyc_chart.hasClass('w3-show')){
-//                                    apyc_chart.addClass('w3-show');
-//                                }
                                 apyc_chart.css('display', 'block');
                             });
                         }
@@ -134,6 +146,7 @@ $(function () {
         chart: {
             type: 'column',
             events: {
+                // ajax request for yearly attacks data
                 load: requestAllYearlyAttacks
             },
             backgroundColor: '#DCDCDC'
@@ -168,27 +181,6 @@ $(function () {
                 cursor: 'pointer',
                 point: {
                     events: {
-                        // click: function () {
-                        //     var attacks_specific_year = [];
-                        //     var year = this.x;
-                        //
-                        //     // ajax request for attacks data for a specific year
-                        //     $.getJSON('attacksmap/' + year + '/', function (data) {
-                        //         $.each(data, function (key, val) {
-                        //             if (country_hc_key_map.has(key)) {
-                        //                 attacks_specific_year.push({
-                        //                     "hc-key": country_hc_key_map.get(key),
-                        //                     "value": val,
-                        //                     othername: key
-                        //                 });
-                        //             }
-                        //         });
-                        //
-                        //         // update attacks_map with the newly requested data
-                        //         attacks_map.series[0].setData(attacks_specific_year);
-                        //         attacks_map.setTitle({text: 'Global Terror Attacks ' + year});
-                        //     });
-                        // },
                         mouseOver: function () {
                             var attacks_specific_year = [];
                             var year = this.x;
@@ -274,4 +266,166 @@ $(function () {
             data: []
         }]
     });
-});
+
+    targets_map = new Highcharts.Map('targets_map', {
+
+        chart: {
+            events: {
+                // initially show map for business target
+                load: function () {
+                    var mapdata = [];
+                    $.getJSON('targetsmap/' + 1, function (data) {
+                        $.each(data, function (key, val) {
+                            if (country_hc_key_map.has(key)) {
+                                mapdata.push({
+                                    "hc-key": country_hc_key_map.get(key),
+                                    "value": val
+                                });
+                                // console.log(key)
+                            }
+                        });
+                        targets_map.series[0].setData(mapdata);
+                        targets_map.setTitle({text: target_names[0] + " Targets"});
+                    });
+                }
+            },
+            backgroundColor: '#DCDCDC'
+        },
+
+        title: {
+            text: ''
+        },
+
+        subtitle: {
+            text: ''
+        },
+
+        mapNavigation: {
+            enabled: true,
+            buttonOptions: {
+                verticalAlign: 'bottom'
+            }
+        },
+
+        colorAxis: {
+            min: 0
+            // minColor: '#efecf3',
+            // maxColor: '#990041'
+        },
+
+        plotOptions: {
+            series: {
+                cursor: 'pointer'
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{series.name}</span><br/>',
+            pointFormat: '{point.othername}: <b>{point.value:.1f}</b><br/>'
+        },
+
+        series: [{
+            data: [],
+            mapData: Highcharts.maps['custom/world-palestine-lowres'],
+            joinBy: 'hc-key',
+            name: 'attacks number',
+            states: {
+                hover: {
+                    color: '#a4edba'
+                }
+            }
+        }]
+    });
+
+    target_chart = Highcharts.chart('targets_chart', {
+
+        chart: {
+            type: 'column',
+            events: {
+                // ajax request for targets data
+                load: function () {
+                    $.getJSON('targets/', function (data) {
+                        var named_data = [];
+                        data.forEach(function (ele) {
+                            console.log(target_names[ele[0]]);
+                            named_data.push([target_names[ele[0]], ele[1]]);
+                        });
+                        target_chart.series[0].setData(named_data);
+                    });
+                }
+            },
+            backgroundColor: '#DCDCDC'
+        },
+
+        title: {
+            text: ''
+        },
+
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Number of Attacks'
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            },
+            series: {
+                cursor: 'pointer',
+                point: {
+                    events: {
+                        mouseOver: function () {
+                            var target_map_data = [];
+                            var target_type = this.name;
+
+                            // ajax request for attacks data for a specific year
+                            $.getJSON('targetsmap/' + target_indexes.get(target_type) + '/', function (data) {
+                                $.each(data, function (key, val) {
+                                    if (country_hc_key_map.has(key)) {
+                                        target_map_data.push({
+                                            "hc-key": country_hc_key_map.get(key),
+                                            "value": val,
+                                        });
+                                    }
+                                });
+
+                                // update attacks_map with the newly requested data
+                                targets_map.series[0].setData(target_map_data);
+                                targets_map.setTitle({text: target_type + ' Targets'});
+                            });
+                        }
+                    }
+                }
+            }
+        },
+
+        series: [{
+            name: 'Attacks',
+            data: []
+        }]
+    });
+})
+;

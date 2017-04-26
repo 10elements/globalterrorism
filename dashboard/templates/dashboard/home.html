@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
-<html class="w3-border">
+<html>
 <head>
     <title>global terrorism 1970-2015</title>
     <meta charset="UTF-8">
@@ -105,31 +105,31 @@
             });
 
             where_option.click(function () {
-                sections.css('display', 'none');
-                $('#terror_location').css('display', 'block');
+                sections.hide();
+                $('#terror_location').show();
             });
 
             who_option.click(function () {
-                sections.css('display', 'none');
-                $('#terror_group').css('display', 'block');
+                sections.hide();
+                $('#terror_group').show();
             });
 
             tactics_option.click(function () {
-                sections.css('display', 'none');
-                $('#tactics').css('display', 'block');
+                sections.hide();
+                $('#tactics').show();
             });
 
             targets_option.click(function () {
-                sections.css('display', 'none');
-                $('#targets').css('display', 'block');
-            })
-        });
+                sections.hide();
+                $('#targets').show();
+            });
 
-        function changeSection(section) {
+            function changeSection(section) {
             console.log("triggered");
-            $('.section').hide();
+            sections.hide();
             $('#' + section).show();
         }
+        });
     </script>
     <script src="{% static 'dashboard/js/wordcloud2.js' %}"></script>
     <script src="{% static 'dashboard/js/wheresection.js' %}"></script>
@@ -143,9 +143,9 @@
     <!--<script src="{% static 'dashboard/js/terrormotives.js' %}"></script>-->
 </head>
 
-<body class="w3-border" style="background-color: #DCDCDC">
+<body style="background-color: #DCDCDC; height: 700px">
 <!-- Top container -->
-<div class="w3-container w3-large w3-text-white w3-padding" style="z-index:4;background-color: #2b446d">
+<div class="w3-container w3-large w3-text-white w3-padding" style="z-index:4; background-color: #2b446d">
     <h1>Global Terrorism 1970-2015</h1>
 </div>
 
@@ -166,11 +166,11 @@
 </div>
 
 <!-- !PAGE CONTENT! -->
-<div id="terror_location" class="section" style="height: 1200px; display: block;">
-    <div id="Map" class="w3-padding-16" style="height: 480px; width: 40%; margin: auto; display: block;"></div>
+<div id="terror_location" class="section" style="height: 100%; display: block;">
+    <div id="attacks_map" class="w3-padding-16" style="height: 360px; width: 40%; margin: auto; display: block;"></div>
     <div id="columChartSpecificCountry" class="w3-animate-top w3-padding-16"
-         style="height: 360px; width: 40%; margin: auto; display: none;"></div>
-    <div id="YearColumn" class="w3-padding-16" style="height: 360px; width: 40%; margin: auto; display: block;"></div>
+         style="height: 240px; width: 40%; margin: auto; display: none;"></div>
+    <div id="YearColumn" class="w3-padding-16" style="height: 240px; width: 40%; margin: auto; display: block;"></div>
     <div style="width: 15%; margin: auto;">
         <button id='overview' class="w3-btn w3-blue w3-padding-12" style="width: 100%"><i class="fa fa-globe"></i>
             overview
@@ -178,7 +178,7 @@
     </div>
 </div>
 
-<div id="terror_group" class="section" style="height: 900px; display: none;">
+<div id="terror_group" class="section" style="height: 50%; display: none;">
     <div class="w3-container w3-large w3-padding-4" style="width: 20%; margin: auto;">
         <form id="filter_form" action="{% url 'dashboard:terror_group_info' %}" method="post">
             {% csrf_token %}
@@ -189,8 +189,8 @@
     </div>
     <!--<div id="top_terror_groups" style="height: 50%; width: 40%; margin: auto; display: block;">-->
     <!--</div>-->
-    <div style="width: 600px; height: 400px; margin: auto">
-        <canvas id="keywordscloud" height="400" width="600"></canvas>
+    <div id="cloud_container" style="width: 60%; height: 90%; margin: auto">
+        <canvas id="keywordscloud"></canvas>
     </div>
     <!--<div class="w3-row" style="height: 40%">-->
     <!--<div id="terror_group_map" class="w3-container w3-half w3-border"></div>-->
@@ -201,12 +201,13 @@
 <div id="tactics" class="section" style="height: 900px; display: none">
     <div class="w3-row" style="height: 100%;">
         <div id="chart" class="w3-half" style="height: 80%;"></div>
-        <div id="attack_correlation_matrix" class="w3-half" style="height: 80%;"></div>
+        <div id="attack_correlation_matrix" class="w3-half" style="height: 80%; margin-top: 5%"></div>
     </div>
 </div>
 
-<div id="targets" class="section" style="height: 900px; display: none">
-
+<div id="targets" class="section" style="height: 700px; display: none">
+    <div id="targets_map" class="w3-padding-16" style="height: 360px; width: 40%; margin: auto"></div>
+    <div id="targets_chart" class="w3-padding-16" style="height: 240px; width: 40%; margin: auto"></div>
 </div>
 <!-- End page content -->
 </body>

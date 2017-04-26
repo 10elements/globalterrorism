@@ -3,14 +3,15 @@
  */
 $(function () {
 
-    var window_height = $(window).height();
+    var window_height = $('#tactics').height();
     var window_width = $(window).width();
-    var width = window_width / 2 - 20,
-        height = window_height / 1.5;
-    var r1 = height / 2.5,
-        r0 = r1 - r1 / 7;
-    var x_dis = width / 2 + 50;
-    var y_dis = height / 2 + 50;
+    var width = window_width / 2,
+        height = window_height * 0.8;
+        aspect = width / height;
+    var r1 = height / 4.5,
+        r0 = r1 - r1 / 8;
+    var x_dis = width / 2;
+    var y_dis = height / 2;
     var fill = d3.scale.category10();
 
     var matrix = [
@@ -26,7 +27,7 @@ $(function () {
     ];
 
     var labels = ["Assassination", "Armed Assault", "Bombing/Explosion", "Hijacking", "Hostage Taking(Barricade)",
-        "Hostage Taking(Kidnapping)", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
+        "Kidnapping", "Facility/Infrastructure Attack", "Unarmed Assault", "Unknown"];
 
     var chord = d3.layout.chord()
         .padding(.04)
@@ -39,6 +40,8 @@ $(function () {
         .outerRadius(r0 + 20);
 
     var svg = d3.select("#chart").append("svg")
+        .attr("viewBox", "0 0 " + width + " " + height)
+        .attr("preserveAspectRatio", "xMinYMid")
         .attr("width", width)
         .attr("height", height)
         .append("g")
@@ -104,6 +107,14 @@ $(function () {
                 .style("fill-opacity", opacity);
         };
     }
+
+    window.onresize = function() {
+            var targetWidth = (window.innerWidth < width / 2)? window.innerWidth : width;
+
+            var svg = d3.select("svg")
+                .attr("width", targetWidth)
+                .attr("height", targetWidth / aspect);
+        }
 
     var attack_correlation_matrix = [
         [1.0, -0.20523122218522805, -0.34522150683457253, -0.020953080657652393, -0.025080406541731826, -0.08296571008355627, -0.09327694431335645, -0.026720907746848824, -0.06808187373049168],
