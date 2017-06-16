@@ -145,7 +145,7 @@ $(function () {
 
 
         title: {
-            text: 'Attacks Correlation Matrix'
+            text: 'Tactics Correlation Matrix'
         },
 
         xAxis: {
